@@ -205,7 +205,7 @@
   <div class="header-inner">
     <div class="kicker">Staff Reference · Verified Aug 2026</div>
     <h1>SA Funding <span class="red">Directory</span></h1>
-    <p class="sub">15 institutions that fund South African businesses — who qualifies, what they offer, and where to apply. Use the quick-match tool when a potential applicant needs financing.</p>
+    <p class="sub">30 institutions that fund South African businesses — who qualifies, what they offer, and where to apply. Use the quick-match tool when a potential applicant needs financing.</p>
     <div class="header-actions">
       <button class="btn btn-primary" onclick="openMatch()">⚡ Quick-match an applicant</button>
       <button class="btn btn-ghost" onclick="window.print()">🖨 Print / save PDF</button>
@@ -238,6 +238,7 @@
         <option value="Free State">Free State</option>
         <option value="North West">North West</option>
         <option value="Limpopo">Limpopo</option>
+        <option value="Western Cape">Western Cape</option>
       </select>
       <select id="f-sector" onchange="render()">
         <option value="">All sectors</option>
@@ -274,7 +275,7 @@
 
 <footer>
   Compiled for internal staff use. All details verified against official sources, Aug 2026. Funding programmes change — always confirm current criteria on the institution's website before referring an applicant.
-  <div class="note">Sources: sedfa.org.za · nefcorp.co.za · idc.co.za · nyda.gov.za · tia.org.za · landbank.co.za · tourism.gov.za · jobsfund.org.za · ecdc.co.za · gep.co.za · mega.gov.za · ithala.co.za · fdc.co.za · lieda.co.za</div>
+  <div class="note">Sources: sedfa.org.za · nefcorp.co.za · idc.co.za · nyda.gov.za · tia.org.za · landbank.co.za · tourism.gov.za · jobsfund.org.za · ecdc.co.za · gep.co.za · mega.gov.za · ithala.co.za · fdc.co.za · lieda.co.za · businesspartners.co.za · lula.co.za · merchantcapital.co.za · bridgement.com · fundinghub.co.za · sasmefund.co.za · sabfoundation.co.za · dbsa.org · ecic.co.za · thedtic.gov.za · nlcsa.org.za · nda.org.za · edgegrowth.com · wesgro.co.za · casidra.co.za</div>
 </footer>
 
 <!-- Quick match modal -->
@@ -296,6 +297,7 @@
           <option>Free State</option>
           <option>North West</option>
           <option>Limpopo</option>
+          <option>Western Cape</option>
           <option>Other / national</option>
         </select>
       </div>
@@ -403,7 +405,67 @@ const DATA = [
   { name:"LEDA", logo:"leda.png", full:"Limpopo Economic Development Agency", site:"https://www.lieda.co.za/", apply:"https://www.lieda.co.za/",
     qualifies:"Limpopo businesses", type:"both", min:"R20,000", max:"R5 million+",
     best:"SMMEs & development in Limpopo — loans, grants, business support", rating:3.5, province:"Limpopo", sector:"General",
-    phone:"+27 15 633 4700", note:"Est. by LEDA Act 5 of 2016. Head office: Lebowakgomo." }
+    phone:"+27 15 633 4700", note:"Est. by LEDA Act 5 of 2016. Head office: Lebowakgomo." },
+  { name:"Business Partners", logo:"businesspartners.png", full:"Business Partners Limited", site:"https://www.businesspartners.co.za/", apply:"https://www.businesspartners.co.za/business-funding/",
+    qualifies:"Established SMEs with a viable business", type:"loan", min:"R500,000", max:"R50 million",
+    best:"Expansion, franchise, property & asset finance for established businesses", rating:4.5, province:"National", sector:"General",
+    phone:"", note:"40+ years in SME finance. Also runs SME Youth Jobs Fund, Basadi Women Growth Fund, Property Finance." },
+  { name:"Lula", logo:"lula.png", full:"Lula (formerly Lulalend)", site:"https://lula.co.za/", apply:"https://lula.co.za/",
+    qualifies:"SMEs with 6+ months trading history", type:"loan", min:"R10,000", max:"R5 million",
+    best:"Fast working capital — funds in as little as 24 hours, all digital", rating:4.5, province:"National", sector:"General",
+    phone:"", note:"Founded 2014. Cash Flow Facility + Fixed-Term Funding. No collateral for cash flow facility." },
+  { name:"Merchant Capital", logo:"merchantcapital.png", full:"Merchant Capital", site:"https://merchantcapital.co.za/", apply:"https://merchantcapital.co.za/",
+    qualifies:"SMEs in retail, food & bev, hospitality, medical, wholesale, services", type:"loan", min:"R50,000", max:"R4 million",
+    best:"Asset-free growth capital for established SMEs — repay from daily card sales", rating:4, province:"National", sector:"General",
+    phone:"", note:"Focus sectors: medical, food & beverage, retail, sales & distribution, hospitality." },
+  { name:"Bridgement", logo:"bridgement.png", full:"Bridgement", site:"https://www.bridgement.com/", apply:"https://www.bridgement.com/",
+    qualifies:"SMEs with monthly turnover from ~R60k", type:"loan", min:"R20,000", max:"R10 million",
+    best:"Business loans, lines of credit, invoice finance & trade credit", rating:4, province:"National", sector:"General",
+    phone:"", note:"Also does franchise finance, hotel & medical practice funding." },
+  { name:"FundingHub", logo:"fundinghub.png", full:"FundingHub", site:"https://fundinghub.co.za/", apply:"https://fundinghub.co.za/",
+    qualifies:"SMEs needing various finance types", type:"loan", min:"R10,000", max:"R10 million",
+    best:"One-stop comparison: unsecured loans, invoice discounting, equipment & bridging finance", rating:4, province:"National", sector:"General",
+    phone:"", note:"Also offers business acquisition and vehicle finance. Free business credit score check." },
+  { name:"SA SME Fund", logo:"sasmefund.png", full:"SA SME Fund", site:"https://sasmefund.co.za/", apply:"https://sasmefund.co.za/",
+    qualifies:"Scalable, high-growth SMEs via fund managers", type:"both", min:"Varies by fund", max:"Varies by fund",
+    best:"Venture capital & growth funding for scalable businesses", rating:4, province:"National", sector:"Technology",
+    phone:"", note:"Fund of funds: R1.4bn backing VC, PE & debt fund managers. Not direct funding — via partner funds." },
+  { name:"SAB Foundation", logo:"sabfoundation.png", full:"SAB Foundation", site:"https://www.sabfoundation.co.za/", apply:"https://www.sabfoundation.co.za/",
+    qualifies:"SMMEs, social innovators & women/youth entrepreneurs", type:"grant", min:"Varies", max:"Up to R2 million",
+    best:"Grants + mentorship for SMMEs, social enterprises & innovation", rating:4, province:"National", sector:"General",
+    phone:"", note:"Also runs Tholoana Enterprise Programme, Disability Empowerment, Social Innovation awards." },
+  { name:"DBSA", logo:"dbsa.png", full:"Development Bank of Southern Africa", site:"https://www.dbsa.org/", apply:"https://www.dbsa.org/solutions/financing",
+    qualifies:"Infrastructure & development projects", type:"loan", min:"R5 million+", max:"Varies",
+    best:"Infrastructure finance & development projects", rating:3.5, province:"National", sector:"General",
+    phone:"", note:"State-owned DFI focused on infrastructure — not general SME lending." },
+  { name:"ECIC", logo:"ecic.png", full:"Export Credit Insurance Corporation", site:"https://www.ecic.co.za/", apply:"https://www.ecic.co.za/",
+    qualifies:"Exporters & projects with SA content", type:"loan", min:"Varies", max:"Varies",
+    best:"Export credit insurance & guarantees for SA exporters", rating:3.5, province:"National", sector:"General",
+    phone:"", note:"Insures SA exporters against non-payment by foreign buyers. Est. 2001." },
+  { name:"dtic Incentives", logo:"dtic.png", full:"Department of Trade, Industry & Competition", site:"https://www.thedtic.gov.za/financial-and-non-financial-support/incentives/", apply:"https://www.thedtic.gov.za/financial-and-non-financial-support/incentives/",
+    qualifies:"Businesses in manufacturing, agro-processing, exports, film, more", type:"grant", min:"Varies by scheme", max:"Varies by scheme",
+    best:"Cost-sharing incentives: EMIA (exports), APSS (agro-processing), BIS (black industrialists), MCEP", rating:4, province:"National", sector:"General",
+    phone:"", note:"Over 20 incentive schemes. APSS: 30% cost-share for agro-processing. BIS: up to R50m for black industrialists." },
+  { name:"NLC", logo:"nlc.png", full:"National Lotteries Commission", site:"https://www.nlcsa.org.za/", apply:"https://www.nlcsa.org.za/apply-for-funding/",
+    qualifies:"NPOs & charities (arts, health, sport, environment)", type:"grant", min:"Varies", max:"Varies",
+    best:"Grant funding for non-profits, not commercial SMEs", rating:3, province:"National", sector:"General",
+    phone:"", note:"Only for registered non-profit organisations — not for-profit businesses." },
+  { name:"NDA", logo:"nda.png", full:"National Development Agency", site:"https://www.nda.org.za/", apply:"https://www.nda.org.za/",
+    qualifies:"Non-profits & CSOs", type:"grant", min:"Varies", max:"Varies",
+    best:"Grant funding for civil society organisations", rating:3, province:"National", sector:"General",
+    phone:"", note:"Funds CSOs working in poverty reduction — not commercial businesses." },
+  { name:"Edge Growth", logo:"edgegrowth.png", full:"Edge Growth", site:"https://www.edgegrowth.com/", apply:"https://www.edgegrowth.com/apply-for-funding/",
+    qualifies:"Scalable SMEs & ESD programmes", type:"both", min:"Varies", max:"Varies",
+    best:"SME development programmes, fund management & ESD", rating:3.5, province:"National", sector:"General",
+    phone:"", note:"Manages SME funds and runs corporate ESD programmes. Apply via SME Hub." },
+  { name:"Wesgro", logo:"wesgro.png", full:"Wesgro (Cape Town & Western Cape)", site:"https://www.wesgro.co.za/", apply:"https://www.wesgro.co.za/",
+    qualifies:"Western Cape businesses & investors", type:"both", min:"Varies", max:"Varies",
+    best:"Investment facilitation, export support & market access for WC businesses", rating:3.5, province:"Western Cape", sector:"General",
+    phone:"", note:"Official tourism, trade & investment promotion agency for Cape Town & WC." },
+  { name:"Casidra", logo:"casidra.png", full:"Cape Agency for Sustainable Integrated Development in Rural Areas", site:"https://casidra.co.za/", apply:"https://casidra.co.za/",
+    qualifies:"Western Cape agri & rural businesses", type:"loan", min:"Varies", max:"Varies",
+    best:"Agricultural & rural development funding in the Western Cape", rating:3, province:"Western Cape", sector:"Agriculture",
+    phone:"", note:"Provincial agency for sustainable rural development and agri support." }
 ];
 
 const TYPE_LABEL = { grant:"Grant", loan:"Loan", both:"Both" };
@@ -482,25 +544,26 @@ function runMatch(){
   const out = DATA.filter(d => {
     const r = [];
     if (prov && d.province === prov) r.push("based in " + prov);
-    if (sector === "Agriculture / farming" && d.sector === "Agriculture") r.push("agriculture specialist");
+    if (sector === "Agriculture / farming" && (d.sector === "Agriculture" || d.name === "Land Bank" || d.name === "Casidra")) r.push("agriculture specialist");
     if (sector === "Tourism / hospitality" && d.sector === "Tourism") r.push("tourism specialist");
-    if (sector === "Technology / innovation" && d.sector === "Technology") r.push("tech/innovation funder");
-    if (sector === "Manufacturing / industry" && d.sector === "Manufacturing") r.push("manufacturing/industry funder");
-    if (owner === "Young person (18–35)" && (d.name === "NYDA" || d.name === "SEDFA")) r.push("youth-focused");
-    if (owner === "Black-owned / empowerment" && (d.name === "NEF" || d.name === "TTF")) r.push("empowerment funder");
-    if (owner === "Woman-owned" && d.name === "SEDFA") r.push("women's programme (Imbali for Her)");
+    if (sector === "Technology / innovation" && (d.sector === "Technology" || d.name === "TIA" || d.name === "SA SME Fund")) r.push("tech/innovation funder");
+    if (sector === "Manufacturing / industry" && (d.sector === "Manufacturing" || d.name === "IDC" || d.name === "dtic Incentives")) r.push("manufacturing/industry funder");
+    if (sector === "Retail / services" && (d.name === "Merchant Capital" || d.name === "Lula" || d.name === "Bridgement" || d.name === "FundingHub")) r.push("retail/services lender");
+    if (owner === "Young person (18–35)" && (d.name === "NYDA" || d.name === "SEDFA" || d.name === "Business Partners")) r.push("youth-focused");
+    if (owner === "Black-owned / empowerment" && (d.name === "NEF" || d.name === "TTF" || d.name === "dtic Incentives")) r.push("empowerment funder");
+    if (owner === "Woman-owned" && (d.name === "SEDFA" || d.name === "Business Partners")) r.push("women's programme");
     if (owner === "Person with disability" && d.name === "SEDFA") r.push("disability scheme (Amavulandlela)");
-    if (amount === "Under R250,000" && (d.name === "NYDA" || d.name === "Ithala" || d.name === "FDC" || d.name === "ECDC")) r.push("small-ticket funding");
-    if (amount === "R250,000 – R1 million" && (d.name === "NEF" || d.name === "GEP" || d.name === "MEGA" || d.name === "NWDC" || d.name === "LEDA")) r.push("fits R250k–R1m range");
-    if (amount === "R1 million – R5 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "TTF" || d.name === "ECDC" || d.name === "GEP" || d.name === "MEGA" || d.name === "FDC" || d.name === "NWDC" || d.name === "LEDA")) r.push("fits R1m–R5m range");
-    if (amount === "R5 million – R25 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "Jobs Fund" || d.name === "Ithala")) r.push("fits R5m–R25m range");
-    if (amount === "Over R25 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "Land Bank")) r.push("large-ticket funding");
+    if (amount === "Under R250,000" && (d.name === "NYDA" || d.name === "Ithala" || d.name === "FDC" || d.name === "ECDC" || d.name === "Lula" || d.name === "FundingHub" || d.name === "Bridgement")) r.push("small-ticket funding");
+    if (amount === "R250,000 – R1 million" && (d.name === "NEF" || d.name === "GEP" || d.name === "MEGA" || d.name === "NWDC" || d.name === "LEDA" || d.name === "Business Partners" || d.name === "Merchant Capital" || d.name === "Bridgement" || d.name === "FundingHub")) r.push("fits R250k–R1m range");
+    if (amount === "R1 million – R5 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "TTF" || d.name === "ECDC" || d.name === "GEP" || d.name === "MEGA" || d.name === "FDC" || d.name === "NWDC" || d.name === "LEDA" || d.name === "Business Partners" || d.name === "Lula" || d.name === "Merchant Capital" || d.name === "Bridgement" || d.name === "FundingHub" || d.name === "SAB Foundation")) r.push("fits R1m–R5m range");
+    if (amount === "R5 million – R25 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "Jobs Fund" || d.name === "Ithala" || d.name === "Business Partners" || d.name === "Bridgement" || d.name === "dtic Incentives")) r.push("fits R5m–R25m range");
+    if (amount === "Over R25 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "Land Bank" || d.name === "DBSA" || d.name === "dtic Incentives")) r.push("large-ticket funding");
     if (r.length) { reasons.push({ d, r }); return true; }
     return false;
   });
   // Always include national general funders as fallback
   DATA.forEach(d => {
-    if (!out.includes(d) && (d.name === "SEDFA" || d.name === "NEF" || d.name === "IDC" || d.name === "NYDA")) {
+    if (!out.includes(d) && (d.name === "SEDFA" || d.name === "NEF" || d.name === "IDC" || d.name === "NYDA" || d.name === "Business Partners" || d.name === "Lula")) {
       out.push(d); reasons.push({ d, r: ["national general funder — always worth checking"] });
     }
   });
