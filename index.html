@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA Funding Directory — Staff Tool</title>
+<style>
+  :root {
+    --ink: #101828;
+    --ink-2: #344054;
+    --muted: #667085;
+    --line: #E4E7EC;
+    --surface: #FFFFFF;
+    --bg: #F7F8FA;
+    --red: #D92D20;
+    --red-soft: #FEF3F2;
+    --green: #027A48;
+    --green-soft: #ECFDF3;
+    --gold: #B54708;
+    --gold-soft: #FFFAEB;
+    --blue: #175CD3;
+    --blue-soft: #EFF8FF;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(16,24,40,.08), 0 1px 2px rgba(16,24,40,.04);
+    --shadow-lg: 0 12px 24px -8px rgba(16,24,40,.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .flag-strip { height: 6px; display: flex; }
+  .flag-strip span { flex: 1; }
+  .flag-strip .r { background: #E03C31; }
+  .flag-strip .w { background: #fff; }
+  .flag-strip .g { background: #007749; }
+  .flag-strip .y { background: #FFB612; }
+  .flag-strip .b { background: #001489; }
+
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 28px 20px 24px;
+  }
+  .header-inner { max-width: 1100px; margin: 0 auto; }
+  .kicker {
+    font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: #FFB612; margin-bottom: 8px;
+  }
+  h1 { font-size: 28px; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+  h1 .red { color: #F97066; }
+  .sub { margin-top: 8px; color: #C0C8D4; font-size: 15px; max-width: 640px; }
+  .header-actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 8px; border: 1px solid transparent;
+    font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
+    transition: transform .06s ease, box-shadow .12s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--red); color: #fff; }
+  .btn-primary:hover { box-shadow: 0 4px 12px rgba(217,45,32,.35); }
+  .btn-ghost { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.2); }
+  .btn-ghost:hover { background: rgba(255,255,255,.14); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+  /* Toolbar */
+  .toolbar {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px; margin-bottom: 18px;
+    display: grid; gap: 10px;
+  }
+  .search-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .search-box { flex: 1; min-width: 220px; position: relative; }
+  .search-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: .5; }
+  .search-box input {
+    width: 100%; padding: 10px 12px 10px 36px; border: 1px solid var(--line);
+    border-radius: 8px; font-size: 14px; background: #fff; color: var(--ink);
+  }
+  .search-box input:focus { outline: 2px solid var(--blue); border-color: transparent; }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+  .filters select {
+    padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px;
+    font-size: 14px; background: #fff; color: var(--ink-2); cursor: pointer;
+  }
+  .count { font-size: 13px; color: var(--muted); align-self: center; margin-left: auto; }
+
+  /* Cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 10px;
+    transition: box-shadow .15s ease, transform .15s ease;
+  }
+  .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .card h2 { font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.2; }
+  .card .acronym { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .stars { color: var(--gold); font-size: 13px; letter-spacing: 1px; white-space: nowrap; }
+  .stars .num { color: var(--muted); font-weight: 600; margin-left: 4px; letter-spacing: 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+    letter-spacing: .02em; text-transform: uppercase;
+  }
+  .tag.grant { background: var(--green-soft); color: var(--green); }
+  .tag.loan { background: var(--blue-soft); color: var(--blue); }
+  .tag.both { background: var(--gold-soft); color: var(--gold); }
+  .tag.province { background: #F2F4F7; color: var(--ink-2); text-transform: none; }
+  .facts { display: grid; gap: 6px; font-size: 13px; }
+  .fact { display: flex; gap: 8px; }
+  .fact .k { color: var(--muted); min-width: 74px; font-weight: 600; flex-shrink: 0; }
+  .fact .v { color: var(--ink-2); }
+  .card .best { font-size: 13px; color: var(--ink-2); background: var(--bg); border-radius: 8px; padding: 8px 10px; }
+  .card .best b { color: var(--ink); }
+  .card-actions { margin-top: auto; display: flex; gap: 8px; }
+  .card-actions a {
+    flex: 1; text-align: center; padding: 8px 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; text-decoration: none;
+  }
+  .link-site { background: var(--ink); color: #fff; }
+  .link-site:hover { background: #1D2939; }
+  .link-apply { background: var(--red-soft); color: var(--red); }
+  .link-apply:hover { background: #FEE4E2; }
+
+  /* Quick match modal */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(16,24,40,.55); z-index: 50;
+    display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 16px; max-width: 560px; width: 100%;
+    box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .modal-head { background: var(--ink); color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-head h3 { font-size: 18px; font-weight: 800; }
+  .modal-close { background: none; border: none; color: #C0C8D4; font-size: 22px; cursor: pointer; line-height: 1; }
+  .modal-close:hover { color: #fff; }
+  .modal-body { padding: 20px; }
+  .q { margin-bottom: 18px; }
+  .q label { display: block; font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 8px; }
+  .q select, .q input {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+    font-size: 14px; background: #fff; color: var(--ink);
+  }
+  .q select:focus, .q input:focus { outline: 2px solid var(--blue); border-color: transparent; }
+  .modal-foot { padding: 0 20px 20px; display: flex; gap: 10px; }
+  .modal-foot .btn { flex: 1; justify-content: center; }
+  .results { padding: 0 20px 20px; }
+  .results h4 { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
+  .result-item {
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  }
+  .result-item .ri-name { font-weight: 700; font-size: 14px; }
+  .result-item .ri-reason { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .result-item a { font-size: 12px; font-weight: 700; color: var(--blue); text-decoration: none; white-space: nowrap; }
+  .empty { text-align: center; padding: 30px 0; color: var(--muted); font-size: 14px; }
+
+  /* Checklist */
+  .checklist {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 18px; margin-top: 22px;
+  }
+  .checklist h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+  .checklist .hint { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .checklist ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+  .checklist li { font-size: 13px; color: var(--ink-2); display: flex; gap: 8px; align-items: flex-start; }
+  .checklist li::before { content: "✓"; color: var(--green); font-weight: 800; flex-shrink: 0; }
+
+  footer { max-width: 1100px; margin: 0 auto; padding: 24px 20px 40px; color: var(--muted); font-size: 12px; }
+  footer .note { margin-top: 6px; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 22px; }
+    .grid { grid-template-columns: 1fr; }
+    .count { width: 100%; margin-left: 0; }
+  }
+  @media print {
+    .toolbar, .header-actions, .modal-backdrop, .card-actions { display: none !important; }
+    body { background: #fff; }
+    .card { break-inside: avoid; box-shadow: none; border-color: #ccc; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    header { background: #fff; color: #000; border-bottom: 2px solid #000; }
+    .kicker { color: #000; }
+    .sub { color: #333; }
+  }
+</style>
+</head>
+<body>
+<div class="flag-strip"><span class="r"></span><span class="w"></span><span class="g"></span><span class="y"></span><span class="b"></span></div>
+
+<header>
+  <div class="header-inner">
+    <div class="kicker">Staff Reference · Verified Aug 2026</div>
+    <h1>SA Funding <span class="red">Directory</span></h1>
+    <p class="sub">15 institutions that fund South African businesses — who qualifies, what they offer, and where to apply. Use the quick-match tool when a potential applicant needs financing.</p>
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="openMatch()">⚡ Quick-match an applicant</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨 Print / save PDF</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <div class="search-row">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="q" placeholder="Search institution, sector, or keyword…" oninput="render()">
+      </div>
+    </div>
+    <div class="filters">
+      <select id="f-type" onchange="render()">
+        <option value="">All funding types</option>
+        <option value="grant">Grant</option>
+        <option value="loan">Loan</option>
+        <option value="both">Both</option>
+      </select>
+      <select id="f-province" onchange="render()">
+        <option value="">All provinces</option>
+        <option value="National">National</option>
+        <option value="Eastern Cape">Eastern Cape</option>
+        <option value="Gauteng">Gauteng</option>
+        <option value="Mpumalanga">Mpumalanga</option>
+        <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+        <option value="Free State">Free State</option>
+        <option value="North West">North West</option>
+        <option value="Limpopo">Limpopo</option>
+      </select>
+      <select id="f-sector" onchange="render()">
+        <option value="">All sectors</option>
+        <option value="General">General / all sectors</option>
+        <option value="Agriculture">Agriculture</option>
+        <option value="Tourism">Tourism</option>
+        <option value="Technology">Technology / innovation</option>
+        <option value="Manufacturing">Manufacturing / industry</option>
+        <option value="Job creation">Job creation</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="checklist">
+    <h3>Before you refer an applicant</h3>
+    <p class="hint">Most funders ask for the same core documents. Get these from the applicant first — it saves a wasted application.</p>
+    <ul>
+      <li>Valid SA ID / passport (all owners &amp; directors)</li>
+      <li>CIPC company registration certificate (or proof of informal business)</li>
+      <li>Business plan / funding proposal</li>
+      <li>Latest financial statements or management accounts</li>
+      <li>6 months bank statements</li>
+      <li>Tax clearance / SARS compliance status</li>
+      <li>B-BBEE certificate or affidavit (where applicable)</li>
+      <li>Quotes for the assets / project being funded</li>
+      <li>Proof of premises / lease agreement</li>
+      <li>ID copies of all shareholders (for empowerment funds)</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  Compiled for internal staff use. All details verified against official sources, Aug 2026. Funding programmes change — always confirm current criteria on the institution's website before referring an applicant.
+  <div class="note">Sources: sedfa.org.za · nefcorp.co.za · idc.co.za · nyda.gov.za · tia.org.za · landbank.co.za · tourism.gov.za · jobsfund.org.za · ecdc.co.za · gep.co.za · mega.gov.za · ithala.co.za · fdc.co.za · lieda.co.za</div>
+</footer>
+
+<!-- Quick match modal -->
+<div class="modal-backdrop" id="backdrop" onclick="if(event.target===this)closeMatch()">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Quick-match an applicant</h3>
+      <button class="modal-close" onclick="closeMatch()">×</button>
+    </div>
+    <div class="modal-body" id="match-body">
+      <div class="q">
+        <label>Where is the business based?</label>
+        <select id="m-province">
+          <option value="">Anywhere in SA</option>
+          <option>Eastern Cape</option>
+          <option>Gauteng</option>
+          <option>Mpumalanga</option>
+          <option>KwaZulu-Natal</option>
+          <option>Free State</option>
+          <option>North West</option>
+          <option>Limpopo</option>
+          <option>Other / national</option>
+        </select>
+      </div>
+      <div class="q">
+        <label>What sector is the business in?</label>
+        <select id="m-sector">
+          <option value="">General / not sure</option>
+          <option>Agriculture / farming</option>
+          <option>Tourism / hospitality</option>
+          <option>Technology / innovation</option>
+          <option>Manufacturing / industry</option>
+          <option>Retail / services</option>
+          <option>Construction</option>
+        </select>
+      </div>
+      <div class="q">
+        <label>Who owns the business?</label>
+        <select id="m-owner">
+          <option value="">Not sure / general</option>
+          <option>Young person (18–35)</option>
+          <option>Black-owned / empowerment</option>
+          <option>Woman-owned</option>
+          <option>Person with disability</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="q">
+        <label>How much funding is needed?</label>
+        <select id="m-amount">
+          <option value="">Not sure yet</option>
+          <option>Under R250,000</option>
+          <option>R250,000 – R1 million</option>
+          <option>R1 million – R5 million</option>
+          <option>R5 million – R25 million</option>
+          <option>Over R25 million</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot" id="match-foot">
+      <button class="btn btn-ghost" style="background:#F2F4F7;color:var(--ink);border-color:var(--line)" onclick="closeMatch()">Cancel</button>
+      <button class="btn btn-primary" onclick="runMatch()">Find matches</button>
+    </div>
+    <div class="results" id="match-results" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  { name:"SEDFA", full:"Small Enterprise Development & Finance Agency", site:"https://www.sedfa.org.za/", apply:"https://www.sedfa.org.za/financial-support.html",
+    qualifies:"SMMEs in all sectors (merged sefa + Seda + CBDA, Oct 2024)", type:"both", min:"Varies by product", max:"Varies by product",
+    best:"General SME finance & support — loans, guarantees, equity, business support", rating:5, province:"National", sector:"General",
+    phone:"086 010 3703", note:"Special funds: Youth Challenge Fund (18–35), Imbali for Her (women), Amavulandlela (disability, R50k–R15m), TREP (township & rural), Construction Fund." },
+  { name:"NEF", full:"National Empowerment Fund", site:"https://www.nefcorp.co.za/", apply:"https://www.nefcorp.co.za/funding-solutions/how-to-apply-for-funding/",
+    qualifies:"Black-owned businesses (B-BBEE)", type:"both", min:"R250,000", max:"R75 million",
+    best:"Empowerment, acquisitions, expansion — debt, equity, mezzanine, guarantees", rating:5, province:"National", sector:"General",
+    phone:"0861 843 633", note:"Also runs Women Empowerment Fund, iMbewu Fund, Rural/Township Fund, Franchise Finance, Tourism Transformation Fund." },
+  { name:"IDC", full:"Industrial Development Corporation", site:"https://www.idc.co.za/", apply:"https://www.idc.co.za/",
+    qualifies:"All sectors, focus on industry & manufacturing", type:"both", min:"R1 million", max:"R120 million+",
+    best:"Industrialisation, manufacturing, scalable businesses — debt, equity, mezzanine, working capital", rating:5, province:"National", sector:"Manufacturing",
+    phone:"", note:"SA's largest state-owned DFI (est. 1940). Best for serious, scalable industrial projects — not small start-ups." },
+  { name:"NYDA", full:"National Youth Development Agency", site:"https://www.nyda.gov.za/", apply:"https://www.nyda.gov.za/Products-Services/NYDA-Grant-Programme.html",
+    qualifies:"Youth entrepreneurs aged 18–35", type:"grant", min:"R1,000", max:"R250,000 (lifetime cap R200k; R250k agri/tech co-ops)",
+    best:"Young start-ups & early-stage businesses — grants, training, mentorship", rating:5, province:"National", sector:"General",
+    phone:"0800 58 58 58", note:"Turnover must be under R750k (R1m for co-ops). Excludes tobacco, alcohol, gambling, pyramid schemes. No partial/co-funding." },
+  { name:"TIA", full:"Technology Innovation Agency", site:"https://www.tia.org.za/", apply:"https://www.tia.org.za/funding-instruments/",
+    qualifies:"Tech innovators, start-ups, R&D projects", type:"grant", min:"R100,000+", max:"R10 million+",
+    best:"Technology commercialisation & innovation — grants, vouchers, co-funding", rating:5, province:"National", sector:"Technology",
+    phone:"", note:"Funding tied to technology readiness level (TRL). For genuine innovation/R&D, not general business." },
+  { name:"Land Bank", full:"Land Bank (SA)", site:"https://landbank.co.za/", apply:"https://landbank.co.za/",
+    qualifies:"Farmers & agribusinesses", type:"loan", min:"R100,000+", max:"R100 million+",
+    best:"Agriculture & agribusiness — land, equipment, production, infrastructure", rating:5, province:"National", sector:"Agriculture",
+    phone:"", note:"Specialist agricultural DFI. Covers commercial and developing farmers." },
+  { name:"TTF", full:"Tourism Transformation Fund", site:"https://www.tourism.gov.za/CurrentProjects/Tourism_Transformation_Fund/Pages/Tourism-Transformation-Fund.aspx", apply:"https://www.nefcorp.co.za/products-services/funding-criteria/",
+    qualifies:"Black-owned tourism enterprises", type:"both", min:"", max:"Grant up to R5m (50% of project)",
+    best:"Tourism transformation & inclusive growth — grant + NEF loan/equity", rating:5, province:"National", sector:"Tourism",
+    phone:"", note:"Department of Tourism + NEF partnership. Grant contribution plus NEF funding for the balance." },
+  { name:"Jobs Fund", full:"The Jobs Fund (National Treasury)", site:"http://www.jobsfund.org.za/", apply:"http://www.jobsfund.org.za/",
+    qualifies:"Organisations with scalable job-creation projects", type:"grant", min:"R5 million", max:"Varies by project",
+    best:"Large projects creating sustainable employment — matched grants", rating:5, province:"National", sector:"Job creation",
+    phone:"", note:"13th call (Green & Informal Economy) closed 30 Jun 2026. Next round TBA — email jobfund@treasury.gov.za for the mailing list." },
+  { name:"ECDC", full:"Eastern Cape Development Corporation", site:"https://www.ecdc.co.za/", apply:"https://www.ecdc.co.za/",
+    qualifies:"Eastern Cape businesses", type:"loan", min:"R10,000", max:"R5 million",
+    best:"SMMEs in the Eastern Cape — term, bridging, construction loans", rating:4.5, province:"Eastern Cape", sector:"General",
+    phone:"", note:"Provincial development corporation — must be EC-based." },
+  { name:"GEP", full:"Gauteng Enterprise Propeller", site:"https://www.gep.co.za/", apply:"https://www.gep.co.za/",
+    qualifies:"Gauteng SMMEs", type:"loan", min:"R50,000", max:"R5 million",
+    best:"Gauteng SMEs & township development — loans, guarantees, business support", rating:4, province:"Gauteng", sector:"General",
+    phone:"", note:"Provincial agency — must be Gauteng-based." },
+  { name:"MEGA", full:"Mpumalanga Economic Growth Agency", site:"https://mega.gov.za/", apply:"https://mega.gov.za/funding/",
+    qualifies:"Mpumalanga businesses", type:"both", min:"R50,000", max:"R10 million",
+    best:"SMMEs & agribusiness in Mpumalanga — loans, equity, bridging, working capital", rating:4, province:"Mpumalanga", sector:"General",
+    phone:"", note:"Provincial DFI + trade & investment promotion arm of Mpumalanga." },
+  { name:"Ithala", full:"Ithala Development Finance Corporation", site:"https://ithala.co.za/", apply:"https://ithala.co.za/",
+    qualifies:"KwaZulu-Natal businesses", type:"loan", min:"R1,000", max:"R25 million",
+    best:"KZN SMMEs in all sectors — term, working capital, bridging loans", rating:5, province:"KwaZulu-Natal", sector:"General",
+    phone:"", note:"Est. 1958. FSP 17125 / NCRCP 610. Also property development, home loans, insurance." },
+  { name:"FDC", full:"Free State Development Corporation", site:"https://www.fdc.co.za/", apply:"https://www.fdc.co.za/",
+    qualifies:"Free State businesses", type:"loan", min:"R5,000", max:"R10 million",
+    best:"SMMEs in the Free State — start-up, expansion, takeover, bridging loans", rating:4.5, province:"Free State", sector:"General",
+    phone:"", note:"Provincial economic development agency." },
+  { name:"NWDC", full:"North West Development Corporation", site:"https://www.nwdc.co.za/", apply:"https://www.nwdc.co.za/",
+    qualifies:"North West businesses", type:"both", min:"R50,000", max:"R10 million",
+    best:"SMMEs & investment in North West — loans, equity, investment facilitation", rating:3.5, province:"North West", sector:"General",
+    phone:"(018) 381 3663", note:"Head office: Mahikeng. Provincial development corporation." },
+  { name:"LEDA", full:"Limpopo Economic Development Agency", site:"https://www.lieda.co.za/", apply:"https://www.lieda.co.za/",
+    qualifies:"Limpopo businesses", type:"both", min:"R20,000", max:"R5 million+",
+    best:"SMMEs & development in Limpopo — loans, grants, business support", rating:3.5, province:"Limpopo", sector:"General",
+    phone:"+27 15 633 4700", note:"Est. by LEDA Act 5 of 2016. Head office: Lebowakgomo." }
+];
+
+const TYPE_LABEL = { grant:"Grant", loan:"Loan", both:"Both" };
+const TYPE_CLASS = { grant:"grant", loan:"loan", both:"both" };
+
+function stars(r){
+  const full = Math.floor(r), half = (r % 1) >= 0.5;
+  let s = "★".repeat(full) + (half ? "☆" : "");
+  return `<span class="stars">${s}<span class="num">${r.toFixed(1)}</span></span>`;
+}
+
+function card(d){
+  return `<article class="card" data-name="${d.name.toLowerCase()}" data-type="${d.type}" data-province="${d.province}" data-sector="${d.sector}">
+    <div class="card-top">
+      <div>
+        <h2>${d.name}</h2>
+        <div class="acronym">${d.full}</div>
+      </div>
+      ${stars(d.rating)}
+    </div>
+    <div class="tags">
+      <span class="tag ${TYPE_CLASS[d.type]}">${TYPE_LABEL[d.type]}</span>
+      <span class="tag province">${d.province}</span>
+      ${d.sector !== "General" ? `<span class="tag province">${d.sector}</span>` : ""}
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="k">Qualifies</span><span class="v">${d.qualifies}</span></div>
+      <div class="fact"><span class="k">Min</span><span class="v">${d.min || "—"}</span></div>
+      <div class="fact"><span class="k">Max</span><span class="v">${d.max}</span></div>
+      ${d.phone ? `<div class="fact"><span class="k">Contact</span><span class="v">${d.phone}</span></div>` : ""}
+    </div>
+    <div class="best"><b>Best for:</b> ${d.best}</div>
+    ${d.note ? `<div class="fact"><span class="k">Note</span><span class="v">${d.note}</span></div>` : ""}
+    <div class="card-actions">
+      <a class="link-site" href="${d.site}" target="_blank" rel="noopener">Official site</a>
+      <a class="link-apply" href="${d.apply}" target="_blank" rel="noopener">Apply</a>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const ft = document.getElementById("f-type").value;
+  const fp = document.getElementById("f-province").value;
+  const fs = document.getElementById("f-sector").value;
+  const list = DATA.filter(d => {
+    if (ft && d.type !== ft) return false;
+    if (fp && d.province !== fp) return false;
+    if (fs && d.sector !== fs) return false;
+    if (q) {
+      const hay = (d.name + " " + d.full + " " + d.qualifies + " " + d.best + " " + d.note).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  document.getElementById("grid").innerHTML = list.map(card).join("") || `<div class="empty">No matches — try clearing a filter.</div>`;
+  document.getElementById("count").textContent = list.length + " of " + DATA.length + " funders";
+}
+render();
+
+function openMatch(){
+  document.getElementById("backdrop").classList.add("open");
+  document.getElementById("match-results").style.display = "none";
+  document.getElementById("match-body").style.display = "block";
+  document.getElementById("match-foot").style.display = "flex";
+}
+function closeMatch(){ document.getElementById("backdrop").classList.remove("open"); }
+
+function runMatch(){
+  const prov = document.getElementById("m-province").value;
+  const sector = document.getElementById("m-sector").value;
+  const owner = document.getElementById("m-owner").value;
+  const amount = document.getElementById("m-amount").value;
+  const reasons = [];
+  const out = DATA.filter(d => {
+    const r = [];
+    if (prov && d.province === prov) r.push("based in " + prov);
+    if (sector === "Agriculture / farming" && d.sector === "Agriculture") r.push("agriculture specialist");
+    if (sector === "Tourism / hospitality" && d.sector === "Tourism") r.push("tourism specialist");
+    if (sector === "Technology / innovation" && d.sector === "Technology") r.push("tech/innovation funder");
+    if (sector === "Manufacturing / industry" && d.sector === "Manufacturing") r.push("manufacturing/industry funder");
+    if (owner === "Young person (18–35)" && (d.name === "NYDA" || d.name === "SEDFA")) r.push("youth-focused");
+    if (owner === "Black-owned / empowerment" && (d.name === "NEF" || d.name === "TTF")) r.push("empowerment funder");
+    if (owner === "Woman-owned" && d.name === "SEDFA") r.push("women's programme (Imbali for Her)");
+    if (owner === "Person with disability" && d.name === "SEDFA") r.push("disability scheme (Amavulandlela)");
+    if (amount === "Under R250,000" && (d.name === "NYDA" || d.name === "Ithala" || d.name === "FDC" || d.name === "ECDC")) r.push("small-ticket funding");
+    if (amount === "R250,000 – R1 million" && (d.name === "NEF" || d.name === "GEP" || d.name === "MEGA" || d.name === "NWDC" || d.name === "LEDA")) r.push("fits R250k–R1m range");
+    if (amount === "R1 million – R5 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "TTF" || d.name === "ECDC" || d.name === "GEP" || d.name === "MEGA" || d.name === "FDC" || d.name === "NWDC" || d.name === "LEDA")) r.push("fits R1m–R5m range");
+    if (amount === "R5 million – R25 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "Jobs Fund" || d.name === "Ithala")) r.push("fits R5m–R25m range");
+    if (amount === "Over R25 million" && (d.name === "IDC" || d.name === "NEF" || d.name === "Land Bank")) r.push("large-ticket funding");
+    if (r.length) { reasons.push({ d, r }); return true; }
+    return false;
+  });
+  // Always include national general funders as fallback
+  DATA.forEach(d => {
+    if (!out.includes(d) && (d.name === "SEDFA" || d.name === "NEF" || d.name === "IDC" || d.name === "NYDA")) {
+      out.push(d); reasons.push({ d, r: ["national general funder — always worth checking"] });
+    }
+  });
+  const body = document.getElementById("match-body");
+  const foot = document.getElementById("match-foot");
+  const res = document.getElementById("match-results");
+  body.style.display = "none"; foot.style.display = "none";
+  res.style.display = "block";
+  res.innerHTML = `<h4>${out.length} potential matches</h4>` + reasons.map(({d, r}) => `
+    <div class="result-item">
+      <div>
+        <div class="ri-name">${d.name} <span class="tag ${TYPE_CLASS[d.type]}" style="margin-left:6px">${TYPE_LABEL[d.type]}</span></div>
+        <div class="ri-reason">${r.join(" · ")}</div>
+      </div>
+      <a href="${d.site}" target="_blank" rel="noopener">Visit →</a>
+    </div>`).join("") + `
+    <div style="margin-top:12px"><button class="btn btn-ghost" style="background:#F2F4F7;color:var(--ink);border-color:var(--line)" onclick="openMatch()">← Start over</button></div>`;
+}
+</script>
+</body>
+</html>
