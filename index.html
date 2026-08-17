@@ -100,6 +100,12 @@
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .card h2 { font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.2; }
   .card .acronym { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .logo-wrap {
+    height: 56px; display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 6px 10px; margin-bottom: 2px; overflow: hidden;
+  }
+  .logo-wrap img { max-height: 44px; max-width: 100%; object-fit: contain; }
   .stars { color: var(--gold); font-size: 13px; letter-spacing: 1px; white-space: nowrap; }
   .stars .num { color: var(--muted); font-weight: 600; margin-left: 4px; letter-spacing: 0; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -338,63 +344,63 @@
 
 <script>
 const DATA = [
-  { name:"SEDFA", full:"Small Enterprise Development & Finance Agency", site:"https://www.sedfa.org.za/", apply:"https://www.sedfa.org.za/financial-support.html",
+  { name:"SEDFA", logo:"sedfa.png", full:"Small Enterprise Development & Finance Agency", site:"https://www.sedfa.org.za/", apply:"https://www.sedfa.org.za/financial-support.html",
     qualifies:"SMMEs in all sectors (merged sefa + Seda + CBDA, Oct 2024)", type:"both", min:"Varies by product", max:"Varies by product",
     best:"General SME finance & support — loans, guarantees, equity, business support", rating:5, province:"National", sector:"General",
     phone:"086 010 3703", note:"Special funds: Youth Challenge Fund (18–35), Imbali for Her (women), Amavulandlela (disability, R50k–R15m), TREP (township & rural), Construction Fund." },
-  { name:"NEF", full:"National Empowerment Fund", site:"https://www.nefcorp.co.za/", apply:"https://www.nefcorp.co.za/funding-solutions/how-to-apply-for-funding/",
+  { name:"NEF", logo:"nef.png", full:"National Empowerment Fund", site:"https://www.nefcorp.co.za/", apply:"https://www.nefcorp.co.za/funding-solutions/how-to-apply-for-funding/",
     qualifies:"Black-owned businesses (B-BBEE)", type:"both", min:"R250,000", max:"R75 million",
     best:"Empowerment, acquisitions, expansion — debt, equity, mezzanine, guarantees", rating:5, province:"National", sector:"General",
     phone:"0861 843 633", note:"Also runs Women Empowerment Fund, iMbewu Fund, Rural/Township Fund, Franchise Finance, Tourism Transformation Fund." },
-  { name:"IDC", full:"Industrial Development Corporation", site:"https://www.idc.co.za/", apply:"https://www.idc.co.za/",
+  { name:"IDC", logo:"idc.png", full:"Industrial Development Corporation", site:"https://www.idc.co.za/", apply:"https://www.idc.co.za/",
     qualifies:"All sectors, focus on industry & manufacturing", type:"both", min:"R1 million", max:"R120 million+",
     best:"Industrialisation, manufacturing, scalable businesses — debt, equity, mezzanine, working capital", rating:5, province:"National", sector:"Manufacturing",
     phone:"", note:"SA's largest state-owned DFI (est. 1940). Best for serious, scalable industrial projects — not small start-ups." },
-  { name:"NYDA", full:"National Youth Development Agency", site:"https://www.nyda.gov.za/", apply:"https://www.nyda.gov.za/Products-Services/NYDA-Grant-Programme.html",
+  { name:"NYDA", logo:"nyda.png", full:"National Youth Development Agency", site:"https://www.nyda.gov.za/", apply:"https://www.nyda.gov.za/Products-Services/NYDA-Grant-Programme.html",
     qualifies:"Youth entrepreneurs aged 18–35", type:"grant", min:"R1,000", max:"R250,000 (lifetime cap R200k; R250k agri/tech co-ops)",
     best:"Young start-ups & early-stage businesses — grants, training, mentorship", rating:5, province:"National", sector:"General",
     phone:"0800 58 58 58", note:"Turnover must be under R750k (R1m for co-ops). Excludes tobacco, alcohol, gambling, pyramid schemes. No partial/co-funding." },
-  { name:"TIA", full:"Technology Innovation Agency", site:"https://www.tia.org.za/", apply:"https://www.tia.org.za/funding-instruments/",
+  { name:"TIA", logo:"tia.png", full:"Technology Innovation Agency", site:"https://www.tia.org.za/", apply:"https://www.tia.org.za/funding-instruments/",
     qualifies:"Tech innovators, start-ups, R&D projects", type:"grant", min:"R100,000+", max:"R10 million+",
     best:"Technology commercialisation & innovation — grants, vouchers, co-funding", rating:5, province:"National", sector:"Technology",
     phone:"", note:"Funding tied to technology readiness level (TRL). For genuine innovation/R&D, not general business." },
-  { name:"Land Bank", full:"Land Bank (SA)", site:"https://landbank.co.za/", apply:"https://landbank.co.za/",
+  { name:"Land Bank", logo:"landbank.png", full:"Land Bank (SA)", site:"https://landbank.co.za/", apply:"https://landbank.co.za/",
     qualifies:"Farmers & agribusinesses", type:"loan", min:"R100,000+", max:"R100 million+",
     best:"Agriculture & agribusiness — land, equipment, production, infrastructure", rating:5, province:"National", sector:"Agriculture",
     phone:"", note:"Specialist agricultural DFI. Covers commercial and developing farmers." },
-  { name:"TTF", full:"Tourism Transformation Fund", site:"https://www.tourism.gov.za/CurrentProjects/Tourism_Transformation_Fund/Pages/Tourism-Transformation-Fund.aspx", apply:"https://www.nefcorp.co.za/products-services/funding-criteria/",
+  { name:"TTF", logo:"ttf.png", full:"Tourism Transformation Fund", site:"https://www.tourism.gov.za/CurrentProjects/Tourism_Transformation_Fund/Pages/Tourism-Transformation-Fund.aspx", apply:"https://www.nefcorp.co.za/products-services/funding-criteria/",
     qualifies:"Black-owned tourism enterprises", type:"both", min:"", max:"Grant up to R5m (50% of project)",
     best:"Tourism transformation & inclusive growth — grant + NEF loan/equity", rating:5, province:"National", sector:"Tourism",
     phone:"", note:"Department of Tourism + NEF partnership. Grant contribution plus NEF funding for the balance." },
-  { name:"Jobs Fund", full:"The Jobs Fund (National Treasury)", site:"http://www.jobsfund.org.za/", apply:"http://www.jobsfund.org.za/",
+  { name:"Jobs Fund", logo:"jobsfund.png", full:"The Jobs Fund (National Treasury)", site:"http://www.jobsfund.org.za/", apply:"http://www.jobsfund.org.za/",
     qualifies:"Organisations with scalable job-creation projects", type:"grant", min:"R5 million", max:"Varies by project",
     best:"Large projects creating sustainable employment — matched grants", rating:5, province:"National", sector:"Job creation",
     phone:"", note:"13th call (Green & Informal Economy) closed 30 Jun 2026. Next round TBA — email jobfund@treasury.gov.za for the mailing list." },
-  { name:"ECDC", full:"Eastern Cape Development Corporation", site:"https://www.ecdc.co.za/", apply:"https://www.ecdc.co.za/",
+  { name:"ECDC", logo:"ecdc.png", full:"Eastern Cape Development Corporation", site:"https://www.ecdc.co.za/", apply:"https://www.ecdc.co.za/",
     qualifies:"Eastern Cape businesses", type:"loan", min:"R10,000", max:"R5 million",
     best:"SMMEs in the Eastern Cape — term, bridging, construction loans", rating:4.5, province:"Eastern Cape", sector:"General",
     phone:"", note:"Provincial development corporation — must be EC-based." },
-  { name:"GEP", full:"Gauteng Enterprise Propeller", site:"https://www.gep.co.za/", apply:"https://www.gep.co.za/",
+  { name:"GEP", logo:"gep.png", full:"Gauteng Enterprise Propeller", site:"https://www.gep.co.za/", apply:"https://www.gep.co.za/",
     qualifies:"Gauteng SMMEs", type:"loan", min:"R50,000", max:"R5 million",
     best:"Gauteng SMEs & township development — loans, guarantees, business support", rating:4, province:"Gauteng", sector:"General",
     phone:"", note:"Provincial agency — must be Gauteng-based." },
-  { name:"MEGA", full:"Mpumalanga Economic Growth Agency", site:"https://mega.gov.za/", apply:"https://mega.gov.za/funding/",
+  { name:"MEGA", logo:"mega.png", full:"Mpumalanga Economic Growth Agency", site:"https://mega.gov.za/", apply:"https://mega.gov.za/funding/",
     qualifies:"Mpumalanga businesses", type:"both", min:"R50,000", max:"R10 million",
     best:"SMMEs & agribusiness in Mpumalanga — loans, equity, bridging, working capital", rating:4, province:"Mpumalanga", sector:"General",
     phone:"", note:"Provincial DFI + trade & investment promotion arm of Mpumalanga." },
-  { name:"Ithala", full:"Ithala Development Finance Corporation", site:"https://ithala.co.za/", apply:"https://ithala.co.za/",
+  { name:"Ithala", logo:"ithala.png", full:"Ithala Development Finance Corporation", site:"https://ithala.co.za/", apply:"https://ithala.co.za/",
     qualifies:"KwaZulu-Natal businesses", type:"loan", min:"R1,000", max:"R25 million",
     best:"KZN SMMEs in all sectors — term, working capital, bridging loans", rating:5, province:"KwaZulu-Natal", sector:"General",
     phone:"", note:"Est. 1958. FSP 17125 / NCRCP 610. Also property development, home loans, insurance." },
-  { name:"FDC", full:"Free State Development Corporation", site:"https://www.fdc.co.za/", apply:"https://www.fdc.co.za/",
+  { name:"FDC", logo:"fdc.png", full:"Free State Development Corporation", site:"https://www.fdc.co.za/", apply:"https://www.fdc.co.za/",
     qualifies:"Free State businesses", type:"loan", min:"R5,000", max:"R10 million",
     best:"SMMEs in the Free State — start-up, expansion, takeover, bridging loans", rating:4.5, province:"Free State", sector:"General",
     phone:"", note:"Provincial economic development agency." },
-  { name:"NWDC", full:"North West Development Corporation", site:"https://www.nwdc.co.za/", apply:"https://www.nwdc.co.za/",
+  { name:"NWDC", logo:"nwdc.png", full:"North West Development Corporation", site:"https://www.nwdc.co.za/", apply:"https://www.nwdc.co.za/",
     qualifies:"North West businesses", type:"both", min:"R50,000", max:"R10 million",
     best:"SMMEs & investment in North West — loans, equity, investment facilitation", rating:3.5, province:"North West", sector:"General",
     phone:"(018) 381 3663", note:"Head office: Mahikeng. Provincial development corporation." },
-  { name:"LEDA", full:"Limpopo Economic Development Agency", site:"https://www.lieda.co.za/", apply:"https://www.lieda.co.za/",
+  { name:"LEDA", logo:"leda.png", full:"Limpopo Economic Development Agency", site:"https://www.lieda.co.za/", apply:"https://www.lieda.co.za/",
     qualifies:"Limpopo businesses", type:"both", min:"R20,000", max:"R5 million+",
     best:"SMMEs & development in Limpopo — loans, grants, business support", rating:3.5, province:"Limpopo", sector:"General",
     phone:"+27 15 633 4700", note:"Est. by LEDA Act 5 of 2016. Head office: Lebowakgomo." }
@@ -411,6 +417,7 @@ function stars(r){
 
 function card(d){
   return `<article class="card" data-name="${d.name.toLowerCase()}" data-type="${d.type}" data-province="${d.province}" data-sector="${d.sector}">
+    <div class="logo-wrap"><img src="assets/logos/${d.logo}" alt="${d.name} logo" loading="lazy"></div>
     <div class="card-top">
       <div>
         <h2>${d.name}</h2>
